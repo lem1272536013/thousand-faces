@@ -1,0 +1,4 @@
+interface:
+  display_name: "千人千面 / Thousand Faces Style Skill"
+  short_description: "把抖音公开内容中的创作者风格克隆成经全量 ASR 研究精修的中文 Creator Skill"
+  default_prompt: "使用 $thousand-faces-style-skill，从这个抖音创作者主页或分享链接克隆公开表达风格，并生成一个完整 Creator Skill：完成采集、ASR、逐条信号分析、证据覆盖评分、宿主研究精修、反向生成测试、二次审稿和质量检查。"
