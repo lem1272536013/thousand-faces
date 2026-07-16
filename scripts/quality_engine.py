@@ -717,7 +717,7 @@ def compose_readiness_semantics(
 
 
 def _relative(run_dir: Path, path: Path) -> str:
-    return path.relative_to(run_dir).as_posix()
+    return path.resolve(strict=False).relative_to(run_dir.resolve(strict=False)).as_posix()
 
 
 def _safe_file_identity(run_dir: Path, path: Path, *, role: str) -> dict[str, Any]:

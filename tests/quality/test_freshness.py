@@ -385,3 +385,14 @@ def test_freshness_report_keeps_hashes_and_metrics_without_copying_corpus_text(
     assert "第一条人工转写用于验证证据覆盖" not in persisted
     assert "第一条人工新鲜度样本" not in persisted
     assert str(run_dir) not in persisted
+
+
+def test_relative_normalizes_equivalent_run_directory_alias(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run"
+    artifact = run_dir / "metadata" / "selected.compact.json"
+    equivalent_alias = tmp_path / "alias" / ".." / "run"
+
+    assert equivalent_alias.resolve() == run_dir.resolve()
+    assert quality_engine._relative(equivalent_alias, artifact) == (
+        "metadata/selected.compact.json"
+    )
