@@ -8,6 +8,8 @@
 runs/
 output/
 logs/
+!tests/fixtures/runs/
+!tests/fixtures/runs/**
 
 # Python
 __pycache__/

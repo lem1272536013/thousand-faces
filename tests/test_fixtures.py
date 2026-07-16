@@ -6,6 +6,7 @@ import json
 import os
 import re
 import socket
+import subprocess
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -161,6 +162,29 @@ def test_manifest_paths_are_confined_small_and_parseable(
         if path.is_file()
     }
     assert actual_paths == declared_paths | {"README.md", "manifest.json"}
+
+
+def test_manifest_paths_are_tracked_by_git(
+    project_root: Path,
+    fixture_manifest: dict[str, Any],
+) -> None:
+    declared_paths = [
+        f"tests/fixtures/{relative_text}"
+        for entry in fixture_manifest["fixtures"]
+        for relative_text in entry["paths"]
+    ]
+    result = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", *declared_paths],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, (
+        "every manifest-declared fixture must be tracked by Git: "
+        f"{result.stderr.strip()}"
+    )
 
 
 def test_tikhub_fixtures_encode_provider_variants(

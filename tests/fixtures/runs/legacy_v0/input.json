@@ -1,0 +1,21 @@
+{
+  "platform": "douyin",
+  "project_name": "legacy-synthetic",
+  "sample_count": 1,
+  "metadata_fetch_limit": 1,
+  "created_at": "2025-01-02T03:04:05+00:00",
+  "execution_mode": "offline_transcripts",
+  "taxonomy_preset": "general",
+  "taxonomy_version": "1",
+  "source_platform": "douyin",
+  "source_url": "https://legacy.example.invalid/profile",
+  "source_collected_at": "2025-01-02T03:04:05+00:00",
+  "rights_basis": "unspecified",
+  "authorization": {
+    "reference_id": null,
+    "note_path": null
+  },
+  "retention_policy": "retain_media",
+  "takedown_contact": "not_provided",
+  "usage_boundary": "Research and draft use only; no commercial delivery claim."
+}
