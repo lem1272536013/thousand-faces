@@ -48,9 +48,9 @@
 | 配置/schema drift | `python scripts/generate_config_docs.py --check` | PASS，配置产物同步 |
 | 发布元数据 | `python scripts/verify_release_metadata.py` | PASS，20 个版本源 |
 | 文档契约 | `python scripts/verify_docs_commands.py` | PASS，67 条静态命令和完整离线工作流 |
-| 全量测试 | `python -m pytest --cov=scripts ... -q --basetemp <系统临时目录>` | PASS，662 项，410.60 秒 |
-| 覆盖率 | Coverage JSON/XML | 79.16%，49 个文件，报告成功解析 |
-| 负向审计 | 退出码、CLI、stage coverage、legacy、安全、readiness、evidence、copyright 专项 | PASS，259 项，49.15 秒 |
+| 全量测试 | `python -m pytest --cov=scripts ... -q --basetemp <系统临时目录>` | PASS，662 项，399.85 秒；JUnit 为 0 failure / 0 error / 0 skip |
+| 覆盖率 | Coverage JSON/XML | 79%，报告成功解析 |
+| 负向审计 | 全量套件中的退出码、CLI、stage coverage、legacy、安全、readiness、evidence、copyright 场景 | PASS，均包含在上述 662 项结果中 |
 | 离线运行 | `python scripts/self_test.py` | PASS，offline self-test passed |
 | 安全示例配置 | `python scripts/config_check.py --env references/config.example.env --strict` | 预期非零；缺真实 TikHub/ASR endpoint/OSS 配置时不误报 live-ready |
 | Workflow 静态检查 | 官方 `actionlint` v1.7.12 | PASS，0 error；发布资产 SHA-256 `6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9` |
@@ -158,8 +158,9 @@ Coverage 报告。
 - 托管 CI 发现的 Windows 路径别名和 Linux fixture 跟踪问题均已关闭并有回归测试。
 - 生产代码中的 `TODO`、`FIXME`、`HACK`、`XXX` 命中数为 0。
 - 全仓共有 167 个已跟踪文件；除既有 README 宣传图外没有超过 1 MiB 的代码、fixture 或报告文件。
-- `tests/providers/test_asr_polling.py`、`tests/providers/test_retry_policy.py`、`tests/test_structured_logging.py`
-  中的 3 个 key 形状命中均为显式 fake/test/synthetic 数据，受 fixture/日志脱敏测试约束，不是真实凭证。
+- 高置信凭证扫描共有 18 次规则命中、分布于 11 个测试代码行；它们位于 provider polling/retry、
+  日志、配置、Settings 和脱敏专项测试，均为显式 fake/test/placeholder 或精确的脱敏哨兵数据，
+  受 fixture/日志脱敏测试约束，不是真实凭证。
 - `creator_quality.py`、`entity_review.py`、`quality_engine.py` 等领域 owner 模块仍较大，但职责边界明确并有架构测试；
   继续拆分属于 P2 可维护性优化，不是本候选的正确性或安全 blocker。
 

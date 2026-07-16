@@ -14,12 +14,12 @@
 
 ## AI 开始任务前检查
 
-- [ ] 已读取 `plan/PLAN.md` 中对应任务的目标、实施内容和验收标准。
-- [ ] 已确认所有依赖任务为 `[x]`。
-- [ ] 已运行 `git status --short --branch` 并识别用户已有改动。
-- [ ] 已决定需要新增或先修改哪些测试。
-- [ ] 已确认不会读取、输出或提交 `.env`、token、签名 URL和真实用户长文本。
-- [ ] 已把本次范围限制在一个 TF 编号内。
+- [x] 已读取 `plan/PLAN.md` 中对应任务的目标、实施内容和验收标准。
+- [x] 已确认所有依赖任务为 `[x]`。
+- [x] 已运行 `git status --short --branch` 并识别用户已有改动。
+- [x] 已决定需要新增或先修改哪些测试。
+- [x] 已确认不会读取、输出或提交 `.env`、token、签名 URL和真实用户长文本。
+- [x] 已把本次范围限制在一个 TF 编号内。
 
 ## Phase 0：可重复验证基线
 
@@ -264,14 +264,14 @@
 
 ## 每任务完成后必做检查
 
-- [ ] 运行对应任务的专项测试。
-- [ ] 运行受影响模块的相邻测试。
-- [ ] 运行 `python scripts/self_test.py`，除非任务明确与运行链路无关；不运行时记录理由。
-- [ ] 运行 `python -m ruff check .`。
-- [ ] 检查 `git diff --check`。
-- [ ] 检查 `git status --short`，确认没有 `.env`、运行产物、缓存、日志或无关文件。
-- [ ] 更新本清单任务状态。
-- [ ] 在下面执行记录中填写验证证据。
+- [x] 运行对应任务的专项测试。
+- [x] 运行受影响模块的相邻测试。
+- [x] 运行 `python scripts/self_test.py`，除非任务明确与运行链路无关；不运行时记录理由。
+- [x] 运行 `python -m ruff check .`。
+- [x] 检查 `git diff --check`。
+- [x] 检查 `git status --short`，确认没有 `.env`、运行产物、缓存、日志或无关文件。
+- [x] 更新本清单任务状态。
+- [x] 在下面执行记录中填写验证证据。
 
 ## 执行记录
 
@@ -751,9 +751,9 @@
 
 - 状态：completed（计划总进度 42/42；离线发布候选验证通过）。
 - 审计摘要：生成 `plan/RELEASE_AUDIT.md`，按 PLAN 第 9 节 34 项 Definition of Done 逐项建立“要求、结果、直接测试/命令证据”映射。审计没有用全量测试绿替代需求覆盖，额外核验失败退出码、安全拒绝、质量 blocker、legacy 只读诊断、跨领域证据、Git 跟踪范围、敏感模式、运行产物、生产代码未解决标记、托管日志和分支保护。首轮托管 CI 发现的 Windows 路径别名与 Linux legacy fixture 漏提交均已通过根因修复和回归测试关闭，当前无 P0/P1、Critical 或 Required 遗留项。
-- 最终本地门禁：Ruff 全仓 PASS；Mypy 51 个源文件 PASS；`pip check` 无损坏依赖；配置/schema drift PASS；发布元数据 20 个版本源 PASS；文档 67 条静态命令及完整离线工作流 PASS；系统临时目录全量 662 passed（410.60 秒），Coverage 79.16% / 49 文件；离线 self-test PASS。退出码、CLI、stage coverage、legacy、安全、readiness、evidence 和 copyright 负向审计 259 passed（49.15 秒）。安全示例配置的严格 live 检查按预期返回非零，证明缺真实 TikHub/ASR endpoint/OSS 配置时不会误报 live-ready。
+- 最终本地门禁：Ruff 全仓 PASS；Mypy 51 个源文件 PASS；`pip check` 无损坏依赖；配置/schema drift PASS；发布元数据 20 个版本源 PASS；文档 67 条静态命令及完整离线工作流 PASS；系统临时目录全量 662 passed（399.85 秒），Coverage 79%；离线 self-test PASS。全量套件直接包含退出码、CLI、stage coverage、legacy、安全拒绝、readiness、evidence 和 copyright 负向场景，JUnit 解析结果为 0 failure / 0 error / 0 skip。安全示例配置的严格 live 检查按预期返回非零，证明缺真实 TikHub/ASR endpoint/OSS 配置时不会误报 live-ready。
 - 托管与保护：GitHub Actions 运行 `29464470089` 在代码基线 `26dbbf6e6fab7db709485da1760054dc5492fa9f` 上成功；Ubuntu Python 3.11 为 662 passed / 1 warning / 271.53 秒，Windows Python 3.11 为 662 passed / 420.98 秒。两个完整日志的高置信凭证扫描均为 0 命中。`main` 已启用 `strict=true` 的两个精确 required checks，均绑定 GitHub Actions App ID `15368`；force push 与 branch deletion 禁用。管理员强制执行在最终审计文档提交和双平台复验后启用并回读。
-- 工作区审计：生产代码 `TODO/FIXME/HACK/XXX` 为 0；精确检查没有真实 `.env`、`.coverage`、非 fixture `runs/`、`logs/` 或 `output/` 被跟踪；4 个 legacy run 文件是清单声明、synthetic-only 的测试资源并有 Git 跟踪契约。3 个凭证形状命中全部位于显式 fake/test 数据，相关脱敏测试和全量 suite 通过。`.env` 只作为本地忽略文件存在，未读取、输出或提交。
+- 工作区审计：生产代码 `TODO/FIXME/HACK/XXX` 为 0；精确检查没有真实 `.env`、`.coverage`、非 fixture `runs/`、`logs/` 或 `output/` 被跟踪；4 个 legacy run 文件是清单声明、synthetic-only 的测试资源并有 Git 跟踪契约。高置信凭证扫描共有 18 次规则命中、分布于 11 个测试代码行，全部为显式 fake/test/placeholder 或脱敏哨兵数据，相关脱敏测试和全量 suite 通过。`.env` 只作为本地忽略文件存在，未读取、输出或提交。
 - 未验证/需授权：未调用真实 TikHub、DashScope/兼容 ASR 或 OSS；未读取真实 `.env`；未创建 tag 或 GitHub Release；未验证真实账号内容的事实准确性、版权授权和商业可交付性；未启用 GitHub Private Vulnerability Reporting。这些边界已在发布审计中逐项列明，符合 TF-042“未授权时明确标记且不阻塞离线完成”的要求。
 - 剩余风险：真实供应商响应和限流仍可能漂移；Windows 原子替换曾在本机文件占用条件下瞬时出现 `WinError 5`，但本轮本地及托管 Windows 全量均通过；上游 `jieba`/`crcmod`/部分阿里云包仍有弃用或构建提示；中文主题、实体和内容重叠含启发式判断，高风险商业使用必须人工复核。领域 owner 模块仍有进一步拆分空间，定为 P2 可维护性优化，不构成发布 blocker。
 - 交付收尾：提交本次 `plan/PLAN.md`、`plan/TODO.md`、`plan/RELEASE_AUDIT.md` 后等待最终 required checks 成功，再启用 `enforce_admins`、回读保护规则并核对本地/远端 SHA；未经新授权不扩大到真实 provider smoke 或正式 Release。
