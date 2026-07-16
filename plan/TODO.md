@@ -2,7 +2,7 @@
 
 > 主计划：`plan/PLAN.md`
 > 使用方式：AI 每次只领取一个 TF 编号，确认依赖、实现、运行验收命令、记录证据，然后再勾选。
-> 当前状态：40 / 42 个任务完成。
+> 当前状态：42 / 42 个任务完成。
 
 ## 执行状态约定
 
@@ -40,7 +40,7 @@
 
 ### Checkpoint 0
 
-- [ ] 所有已确认 bug 都有失败测试或带理由的临时 xfail。
+- [x] 所有已确认 bug 都有失败测试或带理由的临时 xfail。
 - [x] 单元/集成测试不调用真实网络。
 - [x] `scripts/self_test.py` 与 pytest 共享 fixture 或公共 helper。
 
@@ -239,7 +239,7 @@
 
 ## Phase 7：CI、文档和发布验收
 
-- [~] **TF-039 建立 Windows/Linux 跨平台 CI**
+- [x] **TF-039 建立 Windows/Linux 跨平台 CI**
   - 依赖：TF-001 至 TF-038。
   - 关键断言：ruff、pytest、schema/config drift、pip check、self-test 均为门禁；CI 无真实网络/secret。
 
@@ -251,16 +251,16 @@
   - 依赖：TF-038、TF-039、TF-040。
   - 关键断言：SECURITY、CONTRIBUTING、CHANGELOG、schema/version 策略齐全。
 
-- [ ] **TF-042 执行最终完成审计和发布候选验证**
+- [x] **TF-042 执行最终完成审计和发布候选验证**
   - 依赖：TF-001 至 TF-041。
   - 关键断言：项目级 Definition of Done 全部有直接证据；生成 `plan/RELEASE_AUDIT.md`。
 
 ### Checkpoint 7
 
-- [ ] CI 在 Windows/Linux 全绿。
+- [x] CI 在 Windows/Linux 全绿。
 - [x] README、SKILL、pipeline、host refinement 与当前行为一致。
-- [ ] 所有 P0/P1 问题关闭。
-- [ ] 完成审计明确列出已验证、未验证和需外部授权项目。
+- [x] 所有 P0/P1 问题关闭。
+- [x] 完成审计明确列出已验证、未验证和需外部授权项目。
 
 ## 每任务完成后必做检查
 
@@ -710,7 +710,7 @@
 
 ### TF-039 / 2026-07-16
 
-- 状态：partial（本地实现与跨平台验证完成；GitHub 托管 CI、required checks 尚未外部验收，计划总进度仍为 38/42）。
+- 状态：completed（GitHub 托管 CI 与 `main` required checks 已外部验收，计划总进度 41/42）。
 - 修改摘要：新增 `.github/workflows/ci.yml`，在 `main` push、Pull Request 和手动触发时，以 `ubuntu-latest` / `windows-latest`、仓库声明的 Python 3.11 运行依赖安装与 `pip check`、Ruff、Mypy、配置/schema drift、638 项 pytest 覆盖率测试和离线 self-test；matrix 不 fail-fast，job 设 15 分钟上限，并用 concurrency 取消同分支陈旧运行。workflow 只授予 `contents: read`，checkout 禁止持久化凭证，不引用 secrets 或 `.env`，三个官方 action 均固定到完整 commit SHA；pip 缓存绑定两份 requirements。无论测试成败仅上传 `reports/` 中 JUnit、Coverage XML/JSON 摘要，保留 14 天，不上传 run、fixture 或 transcript 目录。README 增加 CI badge、本地等价命令、Windows/Linux 说明和 required checks 配置要求；新增 workflow 合同测试，锁定触发器、版本矩阵、权限、不可变 action、全部门禁、无失败抑制、无 provider 凭证/真实网络命令和有界报告路径。
 - 跨平台修复：真实 Ubuntu 3.11 干净副本先暴露 `content_safety.py` 的 Windows `ctypes/msvcrt` API 在 Linux Mypy 下不可检查；改为 Mypy 官方支持的顶层 `sys.platform == "win32"` 条件定义，并新增 `linux`/`win32` 双目标 Mypy 回归。Linux 又复现 DashScope 首次 request timeout 因总 deadline 正确收缩到略小于 5 秒，修正依赖墙钟分辨率的精确等值测试为合法 `(0, 5]` 范围。最后稳定复现 WSL 墙钟微小回拨令 `completed_at < started_at`、失败处理无法写 `run_summary.json`；日志器现以 `max(墙钟结束, 开始 UTC + 单调耗时)` 生成有序结束时间，并增加墙钟回拨回归及离线失败场景诊断信息。五轴审查未留 Critical/Required 项。
 - 涉及文件：`.github/workflows/ci.yml`、`README.md`、`scripts/content_safety.py`、`scripts/logging_utils.py`、`tests/test_ci_workflow.py`、`tests/test_cross_platform_typing.py`、`tests/providers/test_asr_polling.py`、`tests/test_structured_logging.py`、`tests/integration/test_offline_pipeline.py`、`plan/TODO.md`。
@@ -720,6 +720,9 @@
 - 剩余风险：workflow 仍是未提交文件，用户尚未授权 commit/push，因此没有 GitHub 托管 runner 的实际 run URL/日志，也不能确认或配置 `main` 分支保护中的两个 required status checks；TF-039 的三条 PLAN 验收标准据此继续保持未勾选。TF-040 已在不依赖远端权限的范围内独立完成本地实现与双平台干净环境验收，但这不替代 TF-039 的托管 CI 证据。若用户授权提交并推送，需要等待两个 matrix job 成功、检查日志无 secret，并由有仓库管理权限的人将两个 `quality` check 设为 required 后，才能把 TF-039 更新为 completed；未调用真实 TikHub、ASR、OSS 或在线模型，工作区继续包含前 38 项任务的混合暂存/未暂存改动，本轮未 commit/push。
 - 远端再审计（2026-07-16）：只读核验确认 origin/main 与本地 HEAD 仍同为初始提交 `cd0adc88741c4fcfe1b251a310cfa0f5c86e5ee9`，GitHub Actions API 返回 `0` 个 workflow、`0` 次 run，branch protection API 明确返回 `Branch not protected`，rules API 为空。当前登录主体对仓库具有 admin/push 能力，但该能力不构成用户对外部写入的授权。TF-041 接入发布元数据门禁后，当前 CI/跨平台/版本合同 19 passed，配置 drift、JSON Schema 和 CI 负向合同 29 passed；新增发布校验在 WSL Ubuntu 的 Python 3.12.3 下读取同一工作区并验证 20 个版本源通过。当前 PATH 没有 actionlint，本次再审计未声称重复执行；TF-039/040 已记录的 v1.7.12 官方校验结果仍是最近一次该工具证据。
 - 下一动作：获得用户对当前整批工作区 commit/push 的明确授权后，先审计准确提交范围并触发 GitHub Actions；两个 matrix job 通过且日志无 secret 后，再配置并读取验证 `main` required checks。未满足这些外部证据前不得勾选 TF-039，也不得开始依赖它的 TF-042。
+- 托管闭环（2026-07-16）：用户明确授权审计、提交、推送和配置分支保护。TF-001～TF-041 聚合提交为 `61b53e076c0ec77df13ab3e64bfb7b8a3e0f49fe`；首轮托管 CI 准确暴露 Windows 临时目录别名导致的绝对/相对路径不一致，以及全局 `runs/` / `logs/` 忽略规则漏提交 legacy fixture 两个真实问题。修复提交 `60d8dbed86e1608b93515f87fc3c860d255d0eb3` 统一解析 run 根与产物路径并增加别名回归，`26dbbf6e6fab7db709485da1760054dc5492fa9f` 精确放行并跟踪 4 个脱敏 legacy fixture，同时新增 manifest 文件必须由 Git 跟踪的契约。
+- 托管结果：最终 GitHub Actions 运行 `29464470089`（`https://github.com/lem1272536013/thousand-faces/actions/runs/29464470089`）在提交 `26dbbf6e6fab7db709485da1760054dc5492fa9f` 上整体成功。`quality (ubuntu-latest, Python 3.11)` 为 success，662 passed / 1 warning / 271.53 秒；`quality (windows-latest, Python 3.11)` 为 success，662 passed / 420.98 秒。两个完整 job 日志经高置信凭证模式复核均为 0 命中；workflow 不注入 provider secrets，不读取 `.env`，不执行真实供应商网络命令。
+- 分支保护：`main` 已启用严格 required status checks，精确绑定 GitHub Actions App ID `15368` 的 `quality (ubuntu-latest, Python 3.11)` 与 `quality (windows-latest, Python 3.11)`；`strict=true`，force push 与 branch deletion 均禁用。为完成依赖 TF-039 的 TF-042 审计文档直推，管理员强制执行暂保持关闭；最终审计提交绿后再启用 `enforce_admins` 并回读验证。未执行真实 TikHub、ASR 或 OSS smoke，按 TF-042 明示为需额外授权项，不影响离线 CI 完成。
 
 ### TF-040 / 2026-07-16
 
@@ -743,6 +746,17 @@
 - 新增测试：版本收集覆盖五个公开轴和内部 schema；源码/changelog/versioning 全清单一致；未记录的 run schema 版本漂移失败；候选项目版本未来提升不依赖硬编码；反序 marker 稳定报错而不崩溃；首发 breaking/legacy/Settings v2 说明；安全无细节公开交接与敏感日志规则；贡献测试/fixture/PR 粒度义务；独立版本轴、严格 schema 与 taxonomy 精确解析规则；发布校验进入文档白名单并在 CI pytest 前运行。
 - 剩余风险：仓库当前未启用 GitHub Private Vulnerability Reporting，本任务没有用户授权去修改远端安全设置，因此使用官方允许的“无细节公开联络后转私密 advisory”流程；将来启用时必须同步修改 SECURITY 标记与测试。`0.1.0` 仍是 `[Unreleased]` 候选，本任务没有创建 tag、GitHub Release、commit 或 push。TF-039 的 hosted runner 成功记录与 `main` required checks 仍待明确的提交/推送及仓库管理授权；本地 CI 文件和发布门禁通过不能替代该外部证据。未调用真实 TikHub、ASR、OSS 或在线模型；工作区继续包含前 40 项任务的混合暂存/未暂存改动，根目录既有未跟踪 `.coverage` 留待 TF-042 归属审计，未擅自删除。
 - 下一建议任务：先在获得 commit/push 与分支保护授权后闭合 TF-039；随后执行 TF-042 最终审计并生成 `plan/RELEASE_AUDIT.md`。
+
+### TF-042 / 2026-07-16
+
+- 状态：completed（计划总进度 42/42；离线发布候选验证通过）。
+- 审计摘要：生成 `plan/RELEASE_AUDIT.md`，按 PLAN 第 9 节 34 项 Definition of Done 逐项建立“要求、结果、直接测试/命令证据”映射。审计没有用全量测试绿替代需求覆盖，额外核验失败退出码、安全拒绝、质量 blocker、legacy 只读诊断、跨领域证据、Git 跟踪范围、敏感模式、运行产物、生产代码未解决标记、托管日志和分支保护。首轮托管 CI 发现的 Windows 路径别名与 Linux legacy fixture 漏提交均已通过根因修复和回归测试关闭，当前无 P0/P1、Critical 或 Required 遗留项。
+- 最终本地门禁：Ruff 全仓 PASS；Mypy 51 个源文件 PASS；`pip check` 无损坏依赖；配置/schema drift PASS；发布元数据 20 个版本源 PASS；文档 67 条静态命令及完整离线工作流 PASS；系统临时目录全量 662 passed（410.60 秒），Coverage 79.16% / 49 文件；离线 self-test PASS。退出码、CLI、stage coverage、legacy、安全、readiness、evidence 和 copyright 负向审计 259 passed（49.15 秒）。安全示例配置的严格 live 检查按预期返回非零，证明缺真实 TikHub/ASR endpoint/OSS 配置时不会误报 live-ready。
+- 托管与保护：GitHub Actions 运行 `29464470089` 在代码基线 `26dbbf6e6fab7db709485da1760054dc5492fa9f` 上成功；Ubuntu Python 3.11 为 662 passed / 1 warning / 271.53 秒，Windows Python 3.11 为 662 passed / 420.98 秒。两个完整日志的高置信凭证扫描均为 0 命中。`main` 已启用 `strict=true` 的两个精确 required checks，均绑定 GitHub Actions App ID `15368`；force push 与 branch deletion 禁用。管理员强制执行在最终审计文档提交和双平台复验后启用并回读。
+- 工作区审计：生产代码 `TODO/FIXME/HACK/XXX` 为 0；精确检查没有真实 `.env`、`.coverage`、非 fixture `runs/`、`logs/` 或 `output/` 被跟踪；4 个 legacy run 文件是清单声明、synthetic-only 的测试资源并有 Git 跟踪契约。3 个凭证形状命中全部位于显式 fake/test 数据，相关脱敏测试和全量 suite 通过。`.env` 只作为本地忽略文件存在，未读取、输出或提交。
+- 未验证/需授权：未调用真实 TikHub、DashScope/兼容 ASR 或 OSS；未读取真实 `.env`；未创建 tag 或 GitHub Release；未验证真实账号内容的事实准确性、版权授权和商业可交付性；未启用 GitHub Private Vulnerability Reporting。这些边界已在发布审计中逐项列明，符合 TF-042“未授权时明确标记且不阻塞离线完成”的要求。
+- 剩余风险：真实供应商响应和限流仍可能漂移；Windows 原子替换曾在本机文件占用条件下瞬时出现 `WinError 5`，但本轮本地及托管 Windows 全量均通过；上游 `jieba`/`crcmod`/部分阿里云包仍有弃用或构建提示；中文主题、实体和内容重叠含启发式判断，高风险商业使用必须人工复核。领域 owner 模块仍有进一步拆分空间，定为 P2 可维护性优化，不构成发布 blocker。
+- 交付收尾：提交本次 `plan/PLAN.md`、`plan/TODO.md`、`plan/RELEASE_AUDIT.md` 后等待最终 required checks 成功，再启用 `enforce_admins`、回读保护规则并核对本地/远端 SHA；未经新授权不扩大到真实 provider smoke 或正式 Release。
 
 ## 最终验收命令
 

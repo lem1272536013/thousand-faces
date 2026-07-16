@@ -3,7 +3,7 @@
 > 文档版本：1.0
 > 编制日期：2026-07-15
 > 适用仓库：`qianrenqianmian` / Thousand Faces
-> 计划状态：实施中
+> 计划状态：已完成（离线发布候选验证通过；真实供应商 smoke 需另行授权）
 > 配套清单：`plan/TODO.md`
 
 ## 1. 计划目的
@@ -244,7 +244,7 @@ python -m pytest tests/integration/test_offline_pipeline.py -q
 ### Checkpoint 0：测试基线
 
 - [x] 测试无需外部网络和真实凭证。
-- [ ] 当前行为 bug 均有失败测试或明确的 xfail 说明。
+- [x] 当前行为 bug 均有失败测试或明确的 xfail 说明。
 - [x] `self_test.py` 与 pytest 不维护两套相互漂移的 fixture。
 
 ## Phase 1：修复核心正确性、状态和恢复机制
@@ -1317,9 +1317,9 @@ python -m pytest tests/cli tests/integration/test_legacy_run.py -q
 
 **验收标准：**
 
-- [ ] 新 clone 在两个平台均可通过 CI。
-- [ ] 故意制造配置漂移、schema 错误或测试失败时 CI 会红。
-- [ ] CI 日志不显示任何 secret。
+- [x] 新 clone 在两个平台均可通过 CI。
+- [x] 故意制造配置漂移、schema 错误或测试失败时 CI 会红。
+- [x] CI 日志不显示任何 secret。
 
 **验证命令：**
 
@@ -1404,10 +1404,10 @@ python scripts/verify_release_metadata.py
 
 **验收标准：**
 
-- [ ] `plan/TODO.md` 所有必需项有直接验证证据。
-- [ ] 所有 P0/P1 问题均关闭，没有以 TODO 注释代替修复。
-- [ ] 当前工作区没有意外生成物、secret 或无关改动。
-- [ ] 发布审计明确区分已验证、未验证和需外部授权的内容。
+- [x] `plan/TODO.md` 所有必需项有直接验证证据。
+- [x] 所有 P0/P1 问题均关闭，没有以 TODO 注释代替修复。
+- [x] 当前工作区没有意外生成物、secret 或无关改动。
+- [x] 发布审计明确区分已验证、未验证和需外部授权的内容。
 
 **验证命令：**
 
@@ -1451,58 +1451,58 @@ git status --short --branch
 
 ### 9.1 正确性
 
-- [ ] ASR 片段不重复遍历，合法重复话术保留，0 时间戳保留。
-- [ ] 多 chunk transcript 具有正确全局时间线。
-- [ ] 非法参数在创建运行产物前失败。
-- [ ] 同一秒并发创建 run 不碰撞。
-- [ ] 缓存复用由输入/配置/工具指纹证明。
+- [x] ASR 片段不重复遍历，合法重复话术保留，0 时间戳保留。
+- [x] 多 chunk transcript 具有正确全局时间线。
+- [x] 非法参数在创建运行产物前失败。
+- [x] 同一秒并发创建 run 不碰撞。
+- [x] 缓存复用由输入/配置/工具指纹证明。
 
 ### 9.2 失败语义
 
-- [ ] workflow 状态、步骤结果、质量报告和进程退出码一致。
-- [ ] 部分失败不会记录为 succeeded。
-- [ ] 基础质量失败默认返回非零。
-- [ ] 每个失败有稳定 error code 和最短修复提示。
+- [x] workflow 状态、步骤结果、质量报告和进程退出码一致。
+- [x] 部分失败不会记录为 succeeded。
+- [x] 基础质量失败默认返回非零。
+- [x] 每个失败有稳定 error code 和最短修复提示。
 
 ### 9.3 安全与治理
 
-- [ ] SSRF、路径穿越、无限下载和伪装媒体测试通过。
-- [ ] transcript 提示注入被隔离为数据。
-- [ ] 日志、快照和研究包不含 secrets 或签名 URL。
-- [ ] OSS 与本地媒体有可审计保留/清理策略。
-- [ ] 每个 run 记录 rights basis 和来源边界。
+- [x] SSRF、路径穿越、无限下载和伪装媒体测试通过。
+- [x] transcript 提示注入被隔离为数据。
+- [x] 日志、快照和研究包不含 secrets 或签名 URL。
+- [x] OSS 与本地媒体有可审计保留/清理策略。
+- [x] 每个 run 记录 rights basis 和来源边界。
 
 ### 9.4 质量门禁
 
-- [ ] coverage 在质量检查时是最新的。
-- [ ] 空 bucket 不产生虚高分数。
-- [ ] JSON Schema 在运行时验证。
-- [ ] evidence ID 全部属于 corpus 且类型匹配。
-- [ ] `ready_for_use` 必须依赖 `passed`。
-- [ ] 自填 `passed=true`、伪造 ID或堆字数不能绕过门禁。
-- [ ] transcript dump 使用内容重叠检测。
+- [x] coverage 在质量检查时是最新的。
+- [x] 空 bucket 不产生虚高分数。
+- [x] JSON Schema 在运行时验证。
+- [x] evidence ID 全部属于 corpus 且类型匹配。
+- [x] `ready_for_use` 必须依赖 `passed`。
+- [x] 自填 `passed=true`、伪造 ID或堆字数不能绕过门禁。
+- [x] transcript dump 使用内容重叠检测。
 
 ### 9.5 泛化
 
-- [ ] 科技 taxonomy 是可选 preset。
-- [ ] 默认 generic 流程不包含科技领域假设。
-- [ ] 至少两个非科技 corpus 通过端到端回归。
-- [ ] 主题、短语和实体均可追溯到视频证据。
+- [x] 科技 taxonomy 是可选 preset。
+- [x] 默认 generic 流程不包含科技领域假设。
+- [x] 至少两个非科技 corpus 通过端到端回归。
+- [x] 主题、短语和实体均可追溯到视频证据。
 
 ### 9.6 工程质量
 
-- [ ] pytest、ruff、mypy、pip check 和离线 self-test 全部通过。
-- [ ] CI 覆盖 Windows、Linux 和声明的 Python 版本。
-- [ ] 两个超大核心脚本已拆成可测试模块。
-- [ ] 配置、模板和文档由单一 Settings 模型保持同步。
-- [ ] 无真实凭证、未授权长文本或运行产物进入 Git。
+- [x] pytest、ruff、mypy、pip check 和离线 self-test 全部通过。
+- [x] CI 覆盖 Windows、Linux 和声明的 Python 版本。
+- [x] 两个超大核心脚本已拆成可测试模块。
+- [x] 配置、模板和文档由单一 Settings 模型保持同步。
+- [x] 无真实凭证、未授权长文本或运行产物进入 Git。
 
 ### 9.7 文档与兼容性
 
-- [ ] 新用户可以按 README 完成离线运行。
-- [ ] 旧 run 有明确 legacy 诊断，不被误判为 verified。
-- [ ] breaking changes、schema 版本和迁移方式进入 changelog。
-- [ ] 最终发布审计保存了所有验证命令和结果。
+- [x] 新用户可以按 README 完成离线运行。
+- [x] 旧 run 有明确 legacy 诊断，不被误判为 verified。
+- [x] breaking changes、schema 版本和迁移方式进入 changelog。
+- [x] 最终发布审计保存了所有验证命令和结果。
 
 ## 10. 风险与缓解措施
 
