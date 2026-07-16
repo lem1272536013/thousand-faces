@@ -1,0 +1,8 @@
+{
+  "task": "synthetic-audio-transcription",
+  "text": "第一句人工文本。第二句人工文本。",
+  "segments": [
+    {"id": 0, "start": 0.0, "end": 1.2, "text": "第一句人工文本。"},
+    {"id": 1, "start": 1.2, "end": 2.8, "text": "第二句人工文本。"}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "food-synthetic-001",
+        "desc": "两种食材怎么控制火候，保持清爽口感",
+        "fixture_domain": "food",
+        "create_time": 1767225600,
+        "statistics": {"digg_count": 34, "comment_count": 6, "share_count": 2}
+      },
+      {
+        "aweme_id": "food-synthetic-002",
+        "desc": "同样食材换一种步骤，火候决定最后口感",
+        "fixture_domain": "food",
+        "create_time": 1767139200,
+        "statistics": {"digg_count": 31, "comment_count": 7, "share_count": 4}
+      },
+      {
+        "aweme_id": "food-synthetic-003",
+        "desc": "厨房新手如何用火候保留食材口感",
+        "fixture_domain": "food",
+        "create_time": 1767052800,
+        "statistics": {"digg_count": 29, "comment_count": 5, "share_count": 3}
+      }
+    ],
+    "has_more": false
+  }
+}

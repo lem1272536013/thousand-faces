@@ -1,0 +1,18 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "190000000000000041",
+        "desc": "人工异常统计值样本",
+        "statistics": {
+          "digg_count": -7,
+          "comment_count": "unknown",
+          "share_count": null,
+          "collect_count": 99999999999999999999
+        }
+      }
+    ],
+    "has_more": false
+  }
+}

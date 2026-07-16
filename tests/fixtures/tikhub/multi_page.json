@@ -1,0 +1,24 @@
+{
+  "pages": [
+    {
+      "status_code": 0,
+      "data": {
+        "aweme_list": [
+          {"aweme_id": "190000000000000011", "desc": "人工分页样本一", "create_time": 1767225600}
+        ],
+        "has_more": true,
+        "max_cursor": 1767225500
+      }
+    },
+    {
+      "status_code": 0,
+      "data": {
+        "aweme_list": [
+          {"aweme_id": "190000000000000012", "desc": "人工分页样本二", "create_time": 1767139200}
+        ],
+        "has_more": false,
+        "max_cursor": 1767139100
+      }
+    }
+  ]
+}

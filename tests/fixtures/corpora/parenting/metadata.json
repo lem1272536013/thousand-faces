@@ -1,0 +1,29 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "parenting-synthetic-001",
+        "desc": "孩子情绪上来时，用两个选择拆分沟通步骤",
+        "fixture_domain": "parenting",
+        "create_time": 1767398400,
+        "statistics": {"digg_count": 42, "comment_count": 11, "share_count": 5}
+      },
+      {
+        "aweme_id": "parenting-synthetic-002",
+        "desc": "整理任务的方法：先接住情绪，再给具体选择",
+        "fixture_domain": "parenting",
+        "create_time": 1767312000,
+        "statistics": {"digg_count": 37, "comment_count": 9, "share_count": 4}
+      },
+      {
+        "aweme_id": "parenting-synthetic-003",
+        "desc": "亲子沟通如何用选择降低情绪对抗",
+        "fixture_domain": "parenting",
+        "create_time": 1767225600,
+        "statistics": {"digg_count": 35, "comment_count": 8, "share_count": 3}
+      }
+    ],
+    "has_more": false
+  }
+}

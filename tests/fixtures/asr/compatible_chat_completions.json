@@ -1,0 +1,14 @@
+{
+  "id": "chatcmpl-synthetic-001",
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "这是完全人工构造的兼容接口转写文本。"
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

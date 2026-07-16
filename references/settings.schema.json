@@ -1,0 +1,777 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thousand-faces.invalid/schemas/settings-v2.json",
+  "title": "Thousand Faces normalized Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "x-settings-schema-version": 2,
+  "properties": {
+    "TIKHUB_API_KEY": {
+      "description": "TikHub API credential.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": true,
+      "writeOnly": true
+    },
+    "TIKHUB_API_BASE": {
+      "description": "TikHub absolute HTTP API base URL.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "url"
+    },
+    "TIKHUB_CREATOR_VIDEOS_ENDPOINT": {
+      "description": "TikHub creator-video relative endpoint path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "relative"
+    },
+    "TIKHUB_AUTH_HEADER": {
+      "description": "TikHub authentication header name.",
+      "type": "string",
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "Authorization"
+    },
+    "TIKHUB_AUTH_SCHEME": {
+      "description": "TikHub authentication scheme.",
+      "type": "string",
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "Bearer"
+    },
+    "TIKHUB_METADATA_FETCH_LIMIT": {
+      "description": "Maximum metadata items requested.",
+      "type": "integer",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 100,
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "TIKHUB_SOURCE_URL_PARAM": {
+      "description": "TikHub source URL query parameter.",
+      "type": "string",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "url"
+    },
+    "TIKHUB_AUTO_RESOLVE_DOUYIN_URL": {
+      "description": "Resolve Douyin share URLs before TikHub calls.",
+      "type": "boolean",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": true
+    },
+    "TIKHUB_LIMIT_PARAM": {
+      "description": "TikHub item-limit query parameter.",
+      "type": "string",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "limit"
+    },
+    "TIKHUB_EXTRA_QUERY": {
+      "description": "Additional TikHub query string.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_ITEMS_PATH": {
+      "description": "Optional dotted TikHub item-list path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_VIDEO_ID_PATH": {
+      "description": "Optional dotted TikHub video ID path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_VIDEO_TITLE_PATH": {
+      "description": "Optional dotted TikHub title path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_VIDEO_PUBLISHED_AT_PATH": {
+      "description": "Optional dotted TikHub publish-time path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_VIDEO_DOWNLOAD_URL_PATH": {
+      "description": "Optional dotted TikHub download URL path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_VIDEO_SOURCE_URL_PATH": {
+      "description": "Optional dotted TikHub source URL path.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "tikhub",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "TIKHUB_CURSOR_PARAM": {
+      "description": "TikHub pagination cursor field and query parameter.",
+      "type": "string",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "max_cursor"
+    },
+    "TIKHUB_ENABLE_PAGINATION": {
+      "description": "Enable bounded TikHub cursor pagination.",
+      "type": "boolean",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": true
+    },
+    "TIKHUB_MAX_PAGES": {
+      "description": "Maximum TikHub pages per metadata request.",
+      "type": "integer",
+      "x-group": "tikhub",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 20,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "ALI_ASR_PROVIDER": {
+      "description": "ASR provider adapter selection.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "openai-compatible",
+      "enum": [
+        "openai-compatible",
+        "compatible",
+        "qwen-compatible",
+        "aliyun"
+      ]
+    },
+    "ALI_ASR_API_KEY": {
+      "description": "ASR provider credential.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": true,
+      "writeOnly": true
+    },
+    "ALI_ASR_ENDPOINT": {
+      "description": "OpenAI-compatible ASR absolute endpoint.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "url"
+    },
+    "ALI_ASR_MODEL": {
+      "description": "ASR model identifier.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "qwen3-asr-flash"
+    },
+    "ALI_ASR_LANGUAGE": {
+      "description": "ASR language hint.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "zh-CN"
+    },
+    "ALI_ASR_AUDIO_FORMAT": {
+      "description": "Extracted audio container suffix.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "mp3"
+    },
+    "ALI_ASR_RESPONSE_FORMAT": {
+      "description": "Compatible ASR response format.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "json"
+    },
+    "ALI_ASR_MIME_TYPE": {
+      "description": "Compatible ASR audio MIME type.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "audio/mpeg"
+    },
+    "ALI_ASR_COMPATIBLE_API": {
+      "description": "Compatible ASR request style.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "chat-completions",
+      "enum": [
+        "chat-completions",
+        "audio-transcriptions"
+      ]
+    },
+    "ALI_ASR_ENABLE_ITN": {
+      "description": "Enable inverse text normalization when supported.",
+      "type": "boolean",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": false
+    },
+    "ALI_ASR_TIMEOUT_SECONDS": {
+      "description": "ASR request timeout in seconds.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 180,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "ALI_ASR_CONCURRENCY": {
+      "description": "Maximum concurrent ASR video tasks.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 4,
+      "minimum": 1,
+      "maximum": 16
+    },
+    "ALI_ASR_MAX_BASE64_AUDIO_BYTES": {
+      "description": "Maximum raw compatible-chat audio bytes per request.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 8388608,
+      "minimum": 1,
+      "maximum": 33554432
+    },
+    "ALI_ASR_RETRY": {
+      "description": "Legacy ASR retry attempts.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "deprecated",
+      "x-secret": false,
+      "default": 3,
+      "minimum": 1,
+      "maximum": 20,
+      "x-replacement": "PROVIDER_RETRY_MAX_ATTEMPTS"
+    },
+    "ALI_ASR_POLL_SECONDS": {
+      "description": "DashScope polling interval in seconds.",
+      "type": "number",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 5.0,
+      "minimum": 0.1,
+      "maximum": 3600.0
+    },
+    "ALI_ASR_POLL_DEADLINE_SECONDS": {
+      "description": "DashScope polling deadline in seconds.",
+      "type": "number",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 900.0,
+      "minimum": 1.0,
+      "maximum": 86400.0
+    },
+    "ALI_ASR_WAIT_MODE": {
+      "description": "Legacy bounded DashScope waiting mode.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "wait",
+      "enum": [
+        "wait",
+        "poll"
+      ]
+    },
+    "ALI_ASR_AUDIO_URL_TEMPLATE": {
+      "description": "Absolute public audio URL template for file-url ASR.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "url"
+    },
+    "AUDIO_PUBLIC_URL_BASE": {
+      "description": "Absolute public audio base URL.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "url"
+    },
+    "ASR_SAMPLE_RATE": {
+      "description": "Audio sample rate in hertz.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 16000,
+      "minimum": 8000,
+      "maximum": 384000
+    },
+    "ASR_MP3_BITRATE": {
+      "description": "FFmpeg MP3 audio bitrate.",
+      "type": "string",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "64k"
+    },
+    "ASR_SEGMENT_SECONDS": {
+      "description": "Maximum ASR segment duration in seconds.",
+      "type": "integer",
+      "x-group": "asr",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 120,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "ALI_OSS_ENDPOINT": {
+      "description": "Aliyun OSS endpoint.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "ALI_OSS_BUCKET": {
+      "description": "Aliyun OSS bucket name.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false
+    },
+    "ALI_OSS_ACCESS_KEY_ID": {
+      "description": "Aliyun OSS access-key identifier.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": true,
+      "writeOnly": true
+    },
+    "ALI_OSS_ACCESS_KEY_SECRET": {
+      "description": "Aliyun OSS access-key secret.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": true,
+      "writeOnly": true
+    },
+    "ALI_OSS_PREFIX": {
+      "description": "Managed OSS object prefix.",
+      "type": "string",
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "creator-agent-studio/audio"
+    },
+    "ALI_OSS_SIGNED_URL_EXPIRES": {
+      "description": "OSS signed URL lifetime in seconds.",
+      "type": "integer",
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 3600,
+      "minimum": 60,
+      "maximum": 3600
+    },
+    "ALI_OSS_LIFECYCLE_POLICY": {
+      "description": "Temporary OSS audio lifecycle mode.",
+      "type": "string",
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "delete_after_asr",
+      "enum": [
+        "delete_after_asr",
+        "retain"
+      ]
+    },
+    "ALI_OSS_FAILURE_RETENTION_SECONDS": {
+      "description": "Failed ASR OSS retention window in seconds.",
+      "type": "integer",
+      "x-group": "oss",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 86400,
+      "minimum": 60,
+      "maximum": 2592000
+    },
+    "DASHSCOPE_API_KEY": {
+      "description": "DashScope API credential.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": true,
+      "writeOnly": true
+    },
+    "DASHSCOPE_BASE_HTTP_API_URL": {
+      "description": "DashScope-compatible absolute HTTP API base URL.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "x-group": "asr",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "x-endpoint-kind": "url"
+    },
+    "RUN_ROOT": {
+      "description": "Default root directory for new runs.",
+      "type": "string",
+      "x-group": "runtime",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "runs"
+    },
+    "DOWNLOAD_CONCURRENCY": {
+      "description": "Maximum concurrent video downloads.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 6,
+      "minimum": 1,
+      "maximum": 32
+    },
+    "DOWNLOAD_RETRY": {
+      "description": "Video download retry attempts.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 3,
+      "minimum": 1,
+      "maximum": 20
+    },
+    "MAX_VIDEO_BYTES": {
+      "description": "Maximum bytes per downloaded video.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 536870912,
+      "minimum": 1,
+      "maximum": 53687091200
+    },
+    "DOWNLOAD_HEADER_TIMEOUT_SECONDS": {
+      "description": "Download response-header timeout.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 30,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "DOWNLOAD_DEADLINE_SECONDS": {
+      "description": "Total video download deadline.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 300,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "MEDIA_PROBE_TIMEOUT_SECONDS": {
+      "description": "ffprobe media-validation timeout.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 30,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "HTTP_TIMEOUT_SECONDS": {
+      "description": "Default provider request timeout.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 60,
+      "minimum": 1,
+      "maximum": 3600
+    },
+    "PROVIDER_RETRY_MAX_ATTEMPTS": {
+      "description": "Unified provider maximum attempts.",
+      "type": "integer",
+      "x-group": "recovery",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 3,
+      "minimum": 1,
+      "maximum": 20
+    },
+    "PROVIDER_RETRY_BASE_SECONDS": {
+      "description": "Unified provider base backoff.",
+      "type": "number",
+      "x-group": "recovery",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 1.0,
+      "minimum": 0.0,
+      "maximum": 3600.0
+    },
+    "PROVIDER_RETRY_MAX_SECONDS": {
+      "description": "Unified provider maximum backoff.",
+      "type": "number",
+      "x-group": "recovery",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 10.0,
+      "minimum": 0.0,
+      "maximum": 3600.0
+    },
+    "PROVIDER_RETRY_JITTER_RATIO": {
+      "description": "Unified provider retry jitter ratio.",
+      "type": "number",
+      "x-group": "recovery",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 0.2,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "PROVIDER_REQUEST_DEADLINE_SECONDS": {
+      "description": "Unified logical request deadline.",
+      "type": "number",
+      "x-group": "recovery",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 300.0,
+      "minimum": 0.1,
+      "maximum": 3600.0
+    },
+    "FFMPEG_BIN": {
+      "description": "FFmpeg executable name or path.",
+      "type": "string",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "ffmpeg"
+    },
+    "FFMPEG_CONCURRENCY": {
+      "description": "Maximum concurrent FFmpeg processes.",
+      "type": "integer",
+      "x-group": "runtime",
+      "x-tier": "standard",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 2,
+      "minimum": 1,
+      "maximum": 8
+    },
+    "FFPROBE_BIN": {
+      "description": "ffprobe executable name or path.",
+      "type": "string",
+      "x-group": "runtime",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": "ffprobe"
+    },
+    "DRAFT_MIN_STAGE_COUNT": {
+      "description": "Minimum draft stage count.",
+      "type": "integer",
+      "x-group": "quality",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 2,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "DRAFT_MIN_STAGE_RATIO": {
+      "description": "Minimum draft stage ratio.",
+      "type": "number",
+      "x-group": "quality",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 0.8,
+      "minimum": 0.01,
+      "maximum": 1.0
+    },
+    "READY_MIN_STAGE_COUNT": {
+      "description": "Minimum ready stage count.",
+      "type": "integer",
+      "x-group": "quality",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 5,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "READY_MIN_STAGE_RATIO": {
+      "description": "Minimum ready stage ratio.",
+      "type": "number",
+      "x-group": "quality",
+      "x-tier": "advanced",
+      "x-status": "active",
+      "x-secret": false,
+      "default": 0.95,
+      "minimum": 0.01,
+      "maximum": 1.0
+    }
+  }
+}

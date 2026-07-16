@@ -1,0 +1,15 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "legal-synthetic-001",
+        "desc": "签收服务合同之前，先核对这三个基础字段",
+        "fixture_domain": "legal",
+        "create_time": 1767312000,
+        "statistics": {"digg_count": 28, "comment_count": 9, "share_count": 7}
+      }
+    ],
+    "has_more": false
+  }
+}

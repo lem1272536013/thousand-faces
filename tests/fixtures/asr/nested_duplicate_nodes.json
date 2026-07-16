@@ -1,0 +1,12 @@
+{
+  "payload": {
+    "segments": [
+      {"start": 0, "end": 900, "text": "父子节点重复出现的人工句子。"}
+    ],
+    "result": {
+      "segments": [
+        {"start": 0, "end": 900, "text": "父子节点重复出现的人工句子。"}
+      ]
+    }
+  }
+}

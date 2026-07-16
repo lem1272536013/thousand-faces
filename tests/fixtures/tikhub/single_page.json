@@ -1,0 +1,23 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "190000000000000001",
+        "desc": "人工样本：三分钟学会一道家常菜",
+        "create_time": 1767225600,
+        "statistics": {"digg_count": 120, "comment_count": 8, "share_count": 3},
+        "video": {"play_addr": {"url_list": ["https://media.example.invalid/video/food-001.mp4"]}}
+      },
+      {
+        "aweme_id": "190000000000000002",
+        "desc": "人工样本：合同签字前先看这三处",
+        "create_time": 1767312000,
+        "statistics": {"digg_count": 85, "comment_count": 12, "share_count": 9},
+        "video": {"play_addr": {"url_list": ["https://media.example.invalid/video/legal-001.mp4"]}}
+      }
+    ],
+    "has_more": false,
+    "max_cursor": 1767312000
+  }
+}

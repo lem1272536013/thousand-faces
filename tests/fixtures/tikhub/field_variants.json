@@ -1,0 +1,11 @@
+{
+  "videos": [
+    {"video_id": "190000000000000031", "title": "videos 字段样本", "published_at": "2026-01-01T00:00:00Z"}
+  ],
+  "items": [
+    {"item_id": "190000000000000032", "description": "items 字段样本", "createTime": 1767225600}
+  ],
+  "list": [
+    {"id": "190000000000000033", "caption": "list 字段样本", "timestamp": 1767312000}
+  ]
+}

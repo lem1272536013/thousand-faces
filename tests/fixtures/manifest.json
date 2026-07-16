@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "synthetic_only": true,
+    "credentials_allowed": false,
+    "external_network_allowed": false,
+    "signed_urls_allowed": false
+  },
+  "fixtures": [
+    {
+      "id": "tikhub-single-page",
+      "category": "tikhub",
+      "scenarios": ["single_page"],
+      "paths": ["tikhub/single_page.json"],
+      "synthetic": true,
+      "description": "单页 aweme_list，包含两条人工构造视频。"
+    },
+    {
+      "id": "tikhub-multi-page",
+      "category": "tikhub",
+      "scenarios": ["multi_page"],
+      "paths": ["tikhub/multi_page.json"],
+      "synthetic": true,
+      "description": "两页分页响应，覆盖 has_more 与 cursor。"
+    },
+    {
+      "id": "tikhub-duplicates",
+      "category": "tikhub",
+      "scenarios": ["duplicate_videos"],
+      "paths": ["tikhub/duplicate_videos.json"],
+      "synthetic": true,
+      "description": "同一 video ID 在响应中重复出现。"
+    },
+    {
+      "id": "tikhub-field-variants",
+      "category": "tikhub",
+      "scenarios": ["field_variants"],
+      "paths": ["tikhub/field_variants.json"],
+      "synthetic": true,
+      "description": "videos、items 与 list 三种列表字段变体。"
+    },
+    {
+      "id": "tikhub-empty-list",
+      "category": "tikhub",
+      "scenarios": ["empty_list"],
+      "paths": ["tikhub/empty_list.json"],
+      "synthetic": true,
+      "description": "成功响应但视频列表为空。"
+    },
+    {
+      "id": "tikhub-anomalous-stats",
+      "category": "tikhub",
+      "scenarios": ["anomalous_stats"],
+      "paths": ["tikhub/anomalous_stats.json"],
+      "synthetic": true,
+      "description": "负数、字符串、null 与异常大统计值。"
+    },
+    {
+      "id": "asr-compatible-chat",
+      "category": "asr",
+      "scenarios": ["compatible_chat_completions"],
+      "paths": ["asr/compatible_chat_completions.json"],
+      "synthetic": true,
+      "description": "OpenAI-compatible chat completions 风格响应。"
+    },
+    {
+      "id": "asr-audio-transcriptions",
+      "category": "asr",
+      "scenarios": ["audio_transcriptions"],
+      "paths": ["asr/audio_transcriptions.json"],
+      "synthetic": true,
+      "description": "multipart audio transcriptions 风格响应。"
+    },
+    {
+      "id": "asr-dashscope",
+      "category": "asr",
+      "scenarios": ["dashscope_segments"],
+      "paths": ["asr/dashscope_segments.json"],
+      "synthetic": true,
+      "description": "DashScope transcripts/sentences 风格响应。"
+    },
+    {
+      "id": "asr-nested-duplicates",
+      "category": "asr",
+      "scenarios": ["nested_duplicate_nodes"],
+      "paths": ["asr/nested_duplicate_nodes.json"],
+      "synthetic": true,
+      "description": "相同 segments 同时出现在父节点和 result 子节点。"
+    },
+    {
+      "id": "asr-transcript-edges",
+      "category": "asr",
+      "scenarios": ["legal_repeat", "start_zero", "out_of_order", "no_timestamp", "empty_text", "long_text"],
+      "paths": ["asr/transcript_edge_cases.json"],
+      "synthetic": true,
+      "description": "转写重复、零时间、乱序、缺时间、空文本和超长文本边界。"
+    },
+    {
+      "id": "corpus-tech",
+      "category": "corpus",
+      "scenarios": ["tech"],
+      "paths": [
+        "corpora/tech/metadata.json",
+        "corpora/tech/transcripts/tech-synthetic-001.txt",
+        "corpora/tech/transcripts/tech-synthetic-002.txt",
+        "corpora/tech/transcripts/tech-synthetic-003.txt"
+      ],
+      "synthetic": true,
+      "description": "原创模型研究标题与三条短转写，用于显式科技 preset 回归。"
+    },
+    {
+      "id": "corpus-food",
+      "category": "corpus",
+      "scenarios": ["food"],
+      "paths": [
+        "corpora/food/metadata.json",
+        "corpora/food/transcripts/food-synthetic-001.txt",
+        "corpora/food/transcripts/food-synthetic-002.txt",
+        "corpora/food/transcripts/food-synthetic-003.txt"
+      ],
+      "synthetic": true,
+      "description": "原创家常菜标题与三条短转写，用于非科技领域回归。"
+    },
+    {
+      "id": "corpus-legal",
+      "category": "corpus",
+      "scenarios": ["legal"],
+      "paths": ["corpora/legal/metadata.json", "corpora/legal/transcripts/legal-synthetic-001.txt"],
+      "synthetic": true,
+      "description": "原创合同常识标题与配套短转写，不构成法律意见。"
+    },
+    {
+      "id": "corpus-parenting",
+      "category": "corpus",
+      "scenarios": ["parenting"],
+      "paths": [
+        "corpora/parenting/metadata.json",
+        "corpora/parenting/transcripts/parenting-synthetic-001.txt",
+        "corpora/parenting/transcripts/parenting-synthetic-002.txt",
+        "corpora/parenting/transcripts/parenting-synthetic-003.txt"
+      ],
+      "synthetic": true,
+      "description": "原创亲子沟通标题与三条短转写，用于非科技领域回归。"
+    },
+    {
+      "id": "security-malicious-urls",
+      "category": "security",
+      "scenarios": ["malicious_urls"],
+      "paths": ["security/malicious_urls.json"],
+      "synthetic": true,
+      "description": "回环、私网、云元数据与非 HTTP URL 拒绝样本。"
+    },
+    {
+      "id": "security-path-ids",
+      "category": "security",
+      "scenarios": ["path_traversal_ids"],
+      "paths": ["security/path_traversal_ids.json"],
+      "synthetic": true,
+      "description": "路径穿越、绝对路径和 Windows 保留名样本。"
+    },
+    {
+      "id": "security-prompt-injection",
+      "category": "security",
+      "scenarios": ["prompt_injection"],
+      "paths": ["security/prompt_injection.md"],
+      "synthetic": true,
+      "description": "明确标注为不可信数据的 Markdown 提示注入样本。"
+    },
+    {
+      "id": "security-forged-evidence",
+      "category": "security",
+      "scenarios": ["forged_evidence_ids"],
+      "paths": ["security/forged_evidence_ids.json"],
+      "synthetic": true,
+      "description": "混合 corpus 内 ID 与伪造 ID 的引用完整性样本。"
+    },
+    {
+      "id": "run-legacy-v0",
+      "category": "run",
+      "scenarios": ["legacy_v0"],
+      "paths": [
+        "runs/legacy_v0/input.json",
+        "runs/legacy_v0/workflow.plan.json",
+        "runs/legacy_v0/skill/SKILL.md",
+        "runs/legacy_v0/logs/creator_quality_report.json"
+      ],
+      "synthetic": true,
+      "description": "缺少版本字段、配置快照和来源清单的旧运行，只允许诊断，不得声明已验证。"
+    }
+  ]
+}

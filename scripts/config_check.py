@@ -6,12 +6,12 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
-import os
 import shutil
 from pathlib import Path
 
 import build_creator_skill
 import provider_adapters
+import settings
 
 
 def check_package(name: str) -> bool:
@@ -19,9 +19,13 @@ def check_package(name: str) -> bool:
 
 
 def check_config(args: argparse.Namespace) -> dict:
-    build_creator_skill.load_env_file(Path(args.env).expanduser() if args.env else None)
-    config = build_creator_skill.collect_config()
+    active_settings = settings.load_settings(
+        Path(args.env).expanduser() if args.env else None,
+        install=True,
+    )
+    config = active_settings.as_env()
     missing = build_creator_skill.missing_required(config)
+    validation_errors: list[str] = []
 
     ffmpeg_bin = config.get("FFMPEG_BIN", "ffmpeg")
     has_ffmpeg = shutil.which(ffmpeg_bin) is not None
@@ -32,7 +36,7 @@ def check_config(args: argparse.Namespace) -> dict:
     has_audio_url = bool(config.get("AUDIO_PUBLIC_URL_BASE") or config.get("ALI_ASR_AUDIO_URL_TEMPLATE") or has_oss_config)
     has_tikhub = bool(config.get("TIKHUB_API_KEY") and config.get("TIKHUB_API_BASE") and config.get("TIKHUB_CREATOR_VIDEOS_ENDPOINT"))
     has_asr = bool((config.get("DASHSCOPE_API_KEY") or config.get("ALI_ASR_API_KEY")) and config.get("ALI_ASR_MODEL"))
-    asr_provider = config.get("ALI_ASR_PROVIDER", "aliyun").lower()
+    asr_provider = config.get("ALI_ASR_PROVIDER", settings.DEFAULT_ENV["ALI_ASR_PROVIDER"]).lower()
     compatible_asr = asr_provider in {"openai-compatible", "compatible", "qwen-compatible"}
     has_compatible_asr = compatible_asr and has_requests and has_asr and bool(config.get("ALI_ASR_ENDPOINT") or config.get("DASHSCOPE_BASE_HTTP_API_URL"))
 
@@ -46,13 +50,6 @@ def check_config(args: argparse.Namespace) -> dict:
         "aliyun_asr_configured": has_asr,
         "compatible_asr_configured": has_compatible_asr,
         "audio_public_url_configured": has_audio_url,
-        "token_budgets_configured": all(
-            config.get(key)
-            for key in (
-                "MAX_INPUT_TOKENS",
-                "MAX_OUTPUT_TOKENS",
-            )
-        ),
     }
     live_required = {
         "fetch": checks["tikhub_configured"],
@@ -69,11 +66,12 @@ def check_config(args: argparse.Namespace) -> dict:
         "agent_research": True,
     }
     report = {
-        "passed": all(live_required.values()) and not missing,
+        "passed": all(live_required.values()) and not missing and not validation_errors,
         "checks": checks,
         "live_required": live_required,
         "missing_required_config": missing,
-        "redacted_config": build_creator_skill.redact_config(config) if args.include_config else {},
+        "config_validation_errors": validation_errors,
+        "redacted_config": active_settings.diagnostic_dict() if args.include_config else {},
     }
     return report
 
@@ -85,7 +83,10 @@ def main() -> None:
     parser.add_argument("--strict", action="store_true", help="Exit non-zero when live-run readiness fails")
     args = parser.parse_args()
 
-    report = check_config(args)
+    try:
+        report = check_config(args)
+    except settings.SettingsError as error:
+        parser.error(str(error))
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if args.strict and not report["passed"]:
         raise SystemExit(1)

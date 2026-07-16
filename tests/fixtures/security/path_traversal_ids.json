@@ -1,0 +1,12 @@
+{
+  "ids": [
+    "../escape",
+    "..\\escape",
+    "/absolute/path",
+    "C:\\Windows\\system32",
+    "safe/../../escape",
+    "CON",
+    "trailing-dot."
+  ],
+  "safe_controls": ["190000000000000001", "food-synthetic-001"]
+}

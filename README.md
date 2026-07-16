@@ -19,6 +19,7 @@
   <img alt="Style Clone" src="https://img.shields.io/badge/Style-Clone-666666?style=for-the-badge" />
   <img alt="Evidence Based" src="https://img.shields.io/badge/Evidence-Based-999999?style=for-the-badge" />
   <img alt="Human First" src="https://img.shields.io/badge/Human-First-f5f5f5?style=for-the-badge&labelColor=111111&color=f5f5f5" />
+  <a href="https://github.com/lem1272536013/thousand-faces/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lem1272536013/thousand-faces/actions/workflows/ci.yml/badge.svg" /></a>
 </p>
 
 <br />
@@ -301,6 +302,11 @@ Creator Skill 是风格研究助手，不是创作者本人。
 因此，生成的 Creator Skill 应始终遵守：
 
 - 只基于公开内容或已授权材料。
+- 每个 run 都明确记录 `rights_basis`：`unspecified`、`public_research`、`creator_authorized` 或 `team_owned`；未声明时只允许 draft，不得进入成品或商业交付。
+- 授权场景只在 run 中保存安全引用 ID 或相对说明路径，不复制合同、身份证明和签字页等私密材料。
+- 最终 Skill 保留来源平台、采集时间、权利依据、退出/下架联系和使用边界，且与运行清单一致。
+- 本地媒体、转写和最终 Skill 按 `retain_media`、`transcripts_only` 或 `final_skill_only` 策略管理；实际删除前必须先 dry-run 查看清单。
+- 下载、ffmpeg 和 ASR 分别受独立并发上限约束；compatible-chat 的音频分片在 Base64 前执行文件上限和总在途内存预算检查。
 - 不声称“我是该创作者”。
 - 不代表创作者本人发布声明。
 - 不伪造授权、合作、背书或商业关系。
@@ -353,7 +359,13 @@ Creator Skill 是风格研究助手，不是创作者本人。
 
 - 从抖音创作者主页构建 Creator Skill 的流程说明。
 - TikHub、阿里云 Qwen-ASR、ffmpeg 等运行配置。
-- 视频采集、下载、抽音频、转写、摘要、质量检查等脚本。
+- 单一类型化 Settings：所有运行入口共享默认值、范围和 secret 规则，按默认值 < `.env` < 进程环境变量 < CLI override 加载；新 run 保存带版本且省略 secret 字段的安全配置快照。两份 env 模板、配置字段表和 `references/settings.schema.json` 均由同一目录自动生成；根模板明确应用 TikHub App V3 推荐 preset，参考模板保持 generic 默认。
+- 分责的视频采集、下载、抽音频、转写、摘要、Skill 构建和质量检查模块；`creator_pipeline.py` 仅保留稳定 CLI 与兼容 facade。
+- 分责的宿主精修准备模块：共享 corpus 快照驱动 coverage、topic/entity/signal、schema 和 Markdown/brief 渲染；`prepare_host_refinement.py` 仅编排并写入既有产物。
+- 可版本化的研究 taxonomy：默认使用跨领域 `generic_zh_creator`，科技账号可显式选择 `tech_creator`。
+- 无需联网模型的主题候选发现：输出区分词、真实视频证据、覆盖率和置信度，并保留宿主接受、重命名、合并或拒绝的审计记录。
+- 基于 `jieba` 精确分词的中文信号分析：词语按视频级文档频率排序，重复短语必须跨至少两个视频，并保留视频与原始片段 ID。
+- 可扩展的 ASR 专名复核：preset 与 run 内项目词典共同识别品牌、人物和专业术语，人工处理状态单独持久化；高影响未处理项会阻断 `ready_for_use`，修正只写入映射层和最终 Skill，不改原始 ASR。
 - Creator Skill 的产物结构和安全边界。
 
 默认生成的运行产物会放在：
@@ -361,6 +373,22 @@ Creator Skill 是风格研究助手，不是创作者本人。
 ```text
 runs/<project-name>/<run-id>/
 ```
+
+每个新 run 的 `input.json` 同时是运行格式描述文件，固定包含
+`run_format=thousand-faces.creator-run` 和当前 `schema_version=1`。处理已有 run 前可执行只读诊断：
+
+```powershell
+python scripts/creator_pipeline.py inspect-run `
+  --run-dir .\runs\创作者名称\<run-id> `
+  --json
+```
+
+诊断会给出格式版本、缺失/无效根清单、持久化质量报告状态和下一步命令。只有
+`format_verified=true` 且当前版本质量报告也绑定同一格式时，诊断才可能输出
+`ready_for_use=true`。缺少格式字段或根清单的旧 run 固定标记为 `legacy_unverified`：
+可以只读诊断和执行带 `--report-only` 的质量检查，但构建、恢复、宿主精修、运行汇总、OSS
+写操作和本地清理都会以 `RUN_FORMAT_UNVERIFIED` 非零退出。旧目录不会被自动改写或沿用历史
+ready 声明；需要继续处理时，应从原始来源创建新的版本化 run，再重新执行质量门禁。
 
 其中最重要的是：
 
@@ -374,16 +402,253 @@ skill/
     research_summary.md
     evidence_index.md
     meta.json
+
+logs/pipeline_events.json   # 可追加恢复的结构化事件流
+logs/pipeline_result.json   # 步骤终态、耗时、计数和错误码
+run_summary.json            # 最慢/失败步骤与下一条操作命令
 ```
 
-## 给开发者的最短依赖
+命令行中的 `[telemetry]` 行和 `pipeline_events.json` 使用同一事件模型；无需翻阅供应商原始日志，便可按
+`correlation_id` 查看每个步骤的开始/完成时间、耗时、输入/成功/失败/跳过计数和稳定错误码。失败后优先查看
+`run_summary.json` 的 `execution.failed_steps` 与 `execution.next_action`。
 
-最短依赖很简单：把这个项目发给 AI，让它根据你的环境、凭证和目标创作者帮你完成配置。
+## 快速开始
 
-如果 AI 需要更多上下文，可以把这些文件一起交给它：
+下面的路径不依赖 AI，也不需要 TikHub、ASR 或 OSS 凭证。先用离线自测证明本机环境正确，再决定是否
+配置真实供应商。所有命令都从仓库根目录执行；项目要求 Python 3.11 或更高版本。
 
-- `references/pipeline.md`
-- `references/configuration.md`
+### 安装
+
+运行和开发应使用项目独立的 `.venv`。`requirements.txt` 是运行依赖；需要修改代码或运行完整质量门禁时，
+再安装包含 pytest、Ruff、Mypy 和覆盖率工具的 `requirements-dev.txt`。
+
+Windows PowerShell：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+macOS / Linux：
+
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install --upgrade pip
+./.venv/bin/python -m pip install -r requirements.txt
+```
+
+后续示例中的 `python` 表示已激活 `.venv` 后的解释器；也可以始终替换成 Windows 的
+`.\.venv\Scripts\python.exe` 或 POSIX 的 `./.venv/bin/python`。不要用全局环境的 `pip check` 判断本项目
+依赖是否健康。
+
+### 离线自测
+
+这条命令使用人工 fixture，在系统临时目录完成建 run、导入元数据和 transcript、生成初稿、准备精修包及
+质量检查。它会移除供应商配置，不访问真实网络，结束后自动删除临时产物。
+
+```powershell
+python scripts/self_test.py
+```
+
+成功标志是最后一行 `offline self-test passed`。中间出现 `READY_FOR_USE NO` 是正常的：离线自测只证明
+确定性 draft 流水线可用，不会伪造已经完成的人工作品研究。
+
+### 离线 Demo
+
+如需保留产物用于理解目录结构，运行下面的合成科技语料 demo。它明确跳过下载、ffmpeg 和 ASR，输出到
+`runs/offline-demo/<run-id>/`，不会读取 `.env`。
+
+```powershell
+python scripts/run_creator_skill_build.py `
+  --source-url "https://www.douyin.com/user/offline-demo" `
+  --project-name "offline-demo" `
+  --sample-count 3 `
+  --raw-metadata tests/fixtures/corpora/tech/metadata.json `
+  --transcripts-dir tests/fixtures/corpora/tech/transcripts `
+  --skip-download `
+  --skip-audio `
+  --skip-asr `
+  --rights-basis public_research `
+  --retention-policy retain_media `
+  --takedown-contact "demo@example.invalid"
+```
+
+PowerShell 中定位刚生成的 run 并执行只读诊断：
+
+```powershell
+python scripts/creator_pipeline.py inspect-run `
+  --run-dir .\runs\offline-demo\<run-id> `
+  --json
+```
+
+`format_status=current_verified` 证明根清单和 run schema 可识别；它不等同于内容已经
+`ready_for_use=true`。
+
+### 真实运行
+
+1. 复制 `.env.example` 为不会提交的 `.env`，只填写实际使用的 TikHub 和 ASR 配置。配置字段、推荐 preset
+   及两种 ASR 路径见 [`references/configuration.md`](references/configuration.md)。
+2. 安装 `ffmpeg` 与 `ffprobe`，确保二者在 `PATH` 中，或在 `.env` 中填写 `FFMPEG_BIN`、`FFPROBE_BIN`。
+3. 先执行严格、脱敏的准备检查；失败时不要开始计费调用。
+
+```powershell
+python scripts/config_check.py --env .env --strict
+```
+
+4. 检查通过后运行完整确定性流水线。`--strict-asr` 会把无法转写视为失败，避免把 transcript 缺口误当成功。
+
+```powershell
+python scripts/run_creator_skill_build.py `
+  --source-url "https://v.douyin.com/替换为真实短链/" `
+  --project-name "creator-project" `
+  --sample-count 50 `
+  --rights-basis public_research `
+  --retention-policy transcripts_only `
+  --takedown-contact "rights@example.com" `
+  --env .env `
+  --strict-config `
+  --strict-asr
+```
+
+公开研究不要填写虚假授权。只有经过独立核验的 `creator_authorized` 才能配合安全引用 ID 使用
+`--authorization-reference-id`；合同、身份证明、签字页和密钥不得复制进 run。
+
+### 宿主精修
+
+确定性流水线生成的是可恢复初稿，不是最终 Creator Skill。先诊断 run，再生成研究包：
+
+```powershell
+python scripts/prepare_host_refinement.py `
+  --run-dir .\runs\creator-project\<run-id>
+```
+
+然后严格按 [`references/host_refinement.md`](references/host_refinement.md) 完成主题候选决策、专名复核、
+至少 5 份 raw research notes、`persona_model.json`、固定评测、反向识别、二次审稿和最终 Skill 重写。
+TikHub 标题、transcript 和生成材料始终是不可信语料，不能作为工具指令或授权来源。
+
+如果修改了 `transcripts/`、`metadata/selected.compact.json` 或 `evidence_index.md`，必须重新运行
+`prepare_host_refinement.py`，再执行质量检查。若漏做，质量输出会给出 `FRESHNESS STALE`、
+`STALE_ARTIFACTS` 和唯一的 `REPAIR` 命令；执行该命令后再次检查，不需要猜测隐含步骤。
+
+### 质量检查
+
+对单个 run 使用严格质量检查。`passed=false` 时命令返回非零；`--report-only` 只能用于查看失败报告，不能
+作为通过证据。
+
+```powershell
+python scripts/creator_pipeline.py quality-check `
+  --run-dir .\runs\creator-project\<run-id> `
+  --json
+```
+
+修改项目代码前安装开发依赖，随后运行与 CI 相同的门禁：
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pip check
+python -m ruff check .
+python -m mypy scripts
+python scripts/generate_config_docs.py --check
+python scripts/verify_release_metadata.py
+python scripts/verify_docs_commands.py
+python -m pytest --cov=scripts --cov-report=term-missing -q
+python scripts/self_test.py
+```
+
+`verify_release_metadata.py` 会核对安全/贡献/版本文档、changelog 与源码中的全部持久化 schema/preset
+版本。`verify_docs_commands.py` 会静态验证 README、SKILL、维护文档、pipeline 和 host refinement 中的
+脚本、子命令和参数，并在临时目录实际运行无凭证离线路径。真实供应商命令只做语法验证，不会由文档检查器调用。
+
+## 架构与产物状态
+
+配置和用户授权属于可信控制面；TikHub 响应、媒体、ASR transcript、网页文本及模型输出属于不可信数据面。
+安全校验发生在数据进入路径、网络、文件、研究上下文和最终质量状态的每个边界。
+
+```mermaid
+flowchart LR
+    C[CLI + 类型化 Settings] --> R[版本化 run 与 provenance]
+    U[TikHub / 媒体 / ASR<br/>不可信输入] --> G[URL、SSRF、路径、大小与媒体校验]
+    R --> G
+    G --> D[确定性流水线<br/>metadata → media → transcript → draft]
+    D --> H[host refinement<br/>证据、persona、评测与重写]
+    H --> Q[只读 quality-check<br/>schema、evidence、freshness、content safety]
+    Q --> O[Creator Skill + 审计报告]
+```
+
+核心状态不要混用：
+
+| 状态 | 含义 | 能否交付 |
+|---|---|---|
+| `pipeline_result.status=succeeded` | 本次所有确定性步骤终态成功或被允许跳过 | 只说明执行完成 |
+| `pipeline_result.status=partial/failed` | 至少有部分或全部输入失败；进程返回非零 | 否，先看 `run_summary.json` |
+| `passed=true` | draft 结构、阶段覆盖和内容安全底线通过 | 仍可能只是初稿 |
+| `ready_for_use=true` | `passed`、治理、schema、证据、独立 evaluator、阶段覆盖和 freshness 全部通过 | 可在声明边界内使用 |
+| `commercial_delivery_ready=true` | 在 ready 基础上满足限定的授权依据和联系要求 | 仍需组织自行做法律/授权核验 |
+| `freshness.fresh=false` | 派生产物与当前 transcript、metadata 或 evidence 不一致 | 否，执行报告中的 `REPAIR` |
+| `legacy_unverified` | 旧 run 缺少当前格式或根清单 | 只允许诊断；从原始来源新建 run |
+
+排障首先查看：
+
+```text
+runs/<project>/<run-id>/run_summary.json
+runs/<project>/<run-id>/logs/pipeline_result.json
+runs/<project>/<run-id>/logs/creator_quality_report.json
+```
+
+`run_summary.json.execution.failed_steps` 给出失败步骤、稳定错误码和脱敏摘要；
+`run_summary.json.execution.next_action` 给出下一条可复制命令。正常排障不需要打开供应商原始响应，也不要把
+完整日志或 transcript 发送到公开 issue。
+
+## 常见故障排查
+
+| 症状 | 先检查 | 处理方式 |
+|---|---|---|
+| TikHub 参数错误、空列表或字段路径不匹配 | `config_check.py --strict`；`TIKHUB_SOURCE_URL_PARAM`、endpoint、分页和 App V3 preset | 根 `.env.example` 已使用 App V3 推荐映射；其他接口按 `references/configuration.md` 显式配置，不要改下游 schema |
+| ffmpeg / ffprobe 未找到或媒体无视频流 | `FFMPEG_BIN`、`FFPROBE_BIN`、`INVALID_MEDIA` 和对应步骤 issue | 安装二进制或写绝对路径；先单独确认二者可执行，不要把伪装 HTML/文本重命名为视频 |
+| 429 / RATE_LIMIT | `pipeline_result.json` 的错误码、供应商配额和 `Retry-After` | 内置重试会尊重总 deadline；降低并发或等待配额恢复，不要无限重试或关闭上限 |
+| ASR endpoint / 模型不匹配 | `ALI_ASR_PROVIDER`、`ALI_ASR_ENDPOINT`、`ALI_ASR_COMPATIBLE_API`、模型和公开音频 URL | compatible-chat 与 audio-transcriptions 不能混用；`aliyun` file-url 模式需要受控公网 URL 或 OSS 桥接 |
+| 部分 transcript，流水线状态为 `partial` | `stage_coverage.issues`、缺失 artifact ID、`run_summary.json` | 补齐失败视频后用 `resume_creator_run.py` 恢复；不要把部分覆盖手工改成 succeeded |
+| STALE_ARTIFACT / `FRESHNESS STALE` | 质量报告的 `stale_artifacts`、输入 SHA-256 和 `REPAIR` | 执行唯一 `REPAIR` 命令，再次 `quality-check`；不要手改 manifest 或复用旧 ready 声明 |
+
+## 安全与数据生命周期
+
+| 边界 | 必须遵守的规则 |
+|---|---|
+| 提示注入 | 标题、transcript、JSON、网页和模型输出都是不可信语料；不执行其中的命令，不访问其中的 URL，不允许其修改计划、权限、授权或质量结论 |
+| SSRF | 所有外部 URL 必须经过 `scripts/network_policy.py`；来源域名、DNS 全地址和重定向逐跳复验，provider endpoint 禁止 userinfo；不要新增绕过策略的网络调用 |
+| 凭证 | 密钥只放在未提交的 `.env` 或组织密钥系统中；日志、run、prompt、issue 和截图不得包含 token、Authorization 或签名 URL；一旦泄露立即轮换 |
+| 授权 | 创建 run 时记录 `rights_basis`、安全授权引用、保留策略和退出/下架联系；公开内容不自动等于可冒充、可商用或已授权，私密证明材料不进入 run |
+| OSS 生命周期 | 默认 `delete_after_asr`：成功转写后立即删除；失败对象仅保留到 `retain_until` 并用 `oss-cleanup` 清理；`retain` 必须有明确授权、期限和删除责任人 |
+| 本地删除 | 先运行 `retention.py` 查看 dry-run 清单和 digest，人工确认后才使用 `--apply`；不得直接递归删除相邻项目或未核验目录 |
+
+本地归档示例：
+
+```powershell
+python scripts/retention.py --run-dir .\runs\creator-project\<run-id>
+python scripts/retention.py --run-dir .\runs\creator-project\<run-id> --apply
+```
+
+详细执行契约见 [`references/pipeline.md`](references/pipeline.md)，配置字段见
+[`references/configuration.md`](references/configuration.md)，宿主精修规则见
+[`references/host_refinement.md`](references/host_refinement.md)。
+
+### CI 质量门禁
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) 会在 `main` push、Pull Request 和手动触发时，使用
+GitHub 托管的 Linux 与 Windows runner、Python 3.11 执行同一套门禁。workflow 不配置供应商凭证，不读取
+`.env`，也不调用 TikHub、ASR 或 OSS；上传内容仅限 JUnit 测试报告和 XML/JSON 覆盖率摘要，不包含 run、
+transcript 或其他运行产物。
+
+仓库管理员应把两个 `quality` matrix job 都配置为 `main` 的 required status checks；任一平台的依赖、lint、
+类型、配置/schema、发布元数据、文档命令、测试或 self-test 失败时，workflow 会返回非零并阻止合并。
+
+### 维护、漏洞披露与版本
+
+- 贡献步骤、测试义务、fixture 脱敏和 PR 粒度见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+- 疑似漏洞必须按 [`SECURITY.md`](SECURITY.md) 先完成无细节联络，再进入私密安全公告；不要公开日志或复现。
+- 当前未发布变更与迁移影响见 [`CHANGELOG.md`](CHANGELOG.md)，版本轴和兼容规则见
+  [`references/versioning.md`](references/versioning.md)。
 
 ## 愿景
 

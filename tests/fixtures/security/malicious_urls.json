@@ -1,0 +1,10 @@
+{
+  "cases": [
+    {"case_id": "loopback-v4", "url": "http://127.0.0.1:8080/admin", "reason": "loopback"},
+    {"case_id": "private-rfc1918", "url": "http://10.12.0.8/private/video.mp4", "reason": "private_ip"},
+    {"case_id": "cloud-metadata", "url": "http://169.254.169.254/latest/meta-data/", "reason": "cloud_metadata"},
+    {"case_id": "file-scheme", "url": "file:///etc/passwd", "reason": "non_http"},
+    {"case_id": "loopback-v6", "url": "http://[::1]/internal", "reason": "loopback"},
+    {"case_id": "safe-control", "url": "https://media.example.invalid/video/control.mp4", "reason": "allowlisted_control"}
+  ]
+}

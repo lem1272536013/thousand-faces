@@ -1,0 +1,11 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {"aweme_id": "190000000000000021", "desc": "人工重复样本的首次出现", "create_time": 1767225600},
+      {"aweme_id": "190000000000000021", "desc": "人工重复样本的分页副本", "create_time": 1767225600},
+      {"aweme_id": "190000000000000022", "desc": "人工唯一样本", "create_time": 1767139200}
+    ],
+    "has_more": false
+  }
+}

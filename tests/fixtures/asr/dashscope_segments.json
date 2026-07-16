@@ -1,0 +1,12 @@
+{
+  "file_url": "https://media.example.invalid/audio/synthetic.wav",
+  "transcripts": [
+    {
+      "channel_id": 0,
+      "sentences": [
+        {"sentence_id": 1, "begin_time": 0, "end_time": 1250, "text": "零毫秒开始的人工句子。"},
+        {"sentence_id": 2, "begin_time": 1250, "end_time": 2600, "text": "第二条人工句子。"}
+      ]
+    }
+  ]
+}

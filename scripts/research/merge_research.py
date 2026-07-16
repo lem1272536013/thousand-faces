@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Merge raw research notes into a compact markdown summary.
 
-Updated to support the enhanced celebrity research schema:
+Supports the current creator research schema:
 - Budget-friendly sections: Key Findings / Patterns and Repeated Themes /
   Contradictions / Inferences / Gaps and Missing Information
 - Budget-unfriendly sections: Evidence / Patterns and Repeated Themes /
@@ -124,12 +124,12 @@ def count_potential_long_quote_lines(text: str) -> int:
 
 
 def resolve_research_root(path: Path) -> Path:
-    """Accept a skill directory or a direct research directory."""
-    if (path / "knowledge" / "research" / "raw").exists():
-        return path / "knowledge" / "research"
-    if (path / "raw").exists():
+    """Accept a current run directory or its direct research directory."""
+    if (path / "research" / "raw").is_dir():
+        return path / "research"
+    if (path / "raw").is_dir():
         return path
-    raise FileNotFoundError(f"unable to locate research directory under: {path}")
+    raise FileNotFoundError(f"unable to locate current research/raw directory under: {path}")
 
 
 def collect_markdown_files(research_root: Path) -> list[Path]:
@@ -266,7 +266,7 @@ def merge_research(path: Path) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Merge raw research notes into a summary")
-    parser.add_argument("path", help="Skill directory or research directory")
+    parser.add_argument("path", help="Current run directory or direct research directory")
     args = parser.parse_args()
 
     summary_path = merge_research(Path(args.path).expanduser())

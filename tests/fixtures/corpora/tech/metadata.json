@@ -1,0 +1,29 @@
+{
+  "status_code": 0,
+  "data": {
+    "aweme_list": [
+      {
+        "aweme_id": "tech-synthetic-001",
+        "desc": "AI 模型教程：先用提示词说明任务，再检查输出边界",
+        "fixture_domain": "tech",
+        "create_time": 1767571200,
+        "statistics": {"digg_count": 46, "comment_count": 12, "share_count": 8}
+      },
+      {
+        "aweme_id": "tech-synthetic-002",
+        "desc": "OpenAI Agent 实验：模型提示词为什么需要反例检查",
+        "fixture_domain": "tech",
+        "create_time": 1767484800,
+        "statistics": {"digg_count": 39, "comment_count": 10, "share_count": 6}
+      },
+      {
+        "aweme_id": "tech-synthetic-003",
+        "desc": "模型工具怎么上手：用提示词约束 Agent 的安全边界",
+        "fixture_domain": "tech",
+        "create_time": 1767398400,
+        "statistics": {"digg_count": 33, "comment_count": 8, "share_count": 5}
+      }
+    ],
+    "has_more": false
+  }
+}
